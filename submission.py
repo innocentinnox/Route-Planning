@@ -165,7 +165,7 @@ def getStanfordWaypointsShortestPathProblem() -> WaypointsShortestPathProblem:
     # BEGIN_YOUR_CODE (our solution is 4 lines of code, but don't worry if you deviate from this)
     startLocation = "6608996258"  # Gates Computer Science Building
     waypointTags = ["amenity=food", "amenity=cafe"]
-    endTag = "landmark=green_library"
+    endTag = "amenity=parking"  # Need to end at a parking location
     # END_YOUR_CODE
     return WaypointsShortestPathProblem(startLocation, waypointTags, endTag, cityMap)
 
@@ -241,7 +241,10 @@ class StraightLineHeuristic(Heuristic):
             return 0.0
         minDistance = float('inf')
         for endLocation in self.endLocations:
-            distance = computeDistance(self.cityMap, state.location, endLocation)
+            distance = computeDistance(
+                self.cityMap.geoLocations[state.location],
+                self.cityMap.geoLocations[endLocation]
+            )
             minDistance = min(minDistance, distance)
         return minDistance
         # END_YOUR_CODE

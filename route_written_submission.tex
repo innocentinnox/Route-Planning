@@ -1,0 +1,125 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}  % For including images
+
+\title{CSC 2114 Assignment: Route Planning}
+\author{Group G-11}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Group Members}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Name} & \textbf{Reg. Number} & \textbf{Student Number} \\
+\midrule
+Wangoda Francis & 24/U/11855/PS & 2400711855 \\
+Mujuni Innocent & 24/U/07155/PS & 2400707155 \\
+Nabasirye Seanice & 24/U/22871 & 2400722871 \\
+Namuli Angel Rebecca & 24/U/09332/PS & 2400709332 \\
+Bwanika Robert & 24/U/23908/PSA & 2400723908 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.5cm}
+
+\section*{Problem 1: Grid City}
+
+\subsection*{1a. Minimum Cost Path}
+
+The minimum cost from $(0,0)$ to $(m,n)$ is $n + \frac{m(m+1)}{2}$.
+
+To minimize cost, we should move north first (while $x=0$), then move east. Moving north $n$ times costs $n \times 1 = n$. Then moving east from $x=0$ to $x=m$ costs $1 + 2 + 3 + \ldots + m = \frac{m(m+1)}{2}$.
+
+One optimal path: move north $n$ times, then east $m$ times. This path is unique because any other ordering would incur higher costs (moving east earlier means subsequent moves cost more).
+
+\subsection*{1b. UCS Behavior}
+
+\textbf{(a) False.} UCS will terminate when it reaches $(m,n)$. Although the state space is infinite, UCS explores states in order of increasing cost and will find the goal.
+
+\textbf{(b) False.} UCS explores all states within a certain cost threshold, not just those in the rectangle. For example, it might explore $(m+1, 0)$ if that state's cost is less than the cost to reach $(m,n)$.
+
+\textbf{(c) True.} UCS explores states in order of increasing past cost. Once it reaches $(m,n)$, all explored states must have past costs less than or equal to the minimum cost to $(m,n)$.
+
+\subsection*{1c. Graph Properties}
+
+\textbf{(a) True.} Adding an edge provides a new potential path. It cannot increase minimum cost between any nodes, only decrease it or keep it the same.
+
+\textbf{(b) False.} Negative edge costs violate UCS assumptions. UCS may terminate before finding the true minimum cost path with negative edges.
+
+\textbf{(c) False.} If paths have different numbers of edges, increasing all costs by 1 changes which path is optimal. A path with fewer edges becomes relatively cheaper.
+
+\section*{Problem 2: Shortest Paths}
+
+\subsection*{2b. Custom Stanford Route}
+
+\textbf{Route 1 - Insightful:}
+
+Start: Gates CS Building, End: Coupa Cafe (amenity=food)
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{problem_2b_route1.png}
+\end{center}
+
+This route goes from Gates to Coupa Cafe at Green Library, which is a popular food spot on campus. The visualization shows the path clearly marked in blue, demonstrating how the algorithm finds an efficient route to the nearest food location. This helps understand pedestrian flow patterns on campus.
+
+\textbf{Route 2 - Issues:}
+
+Start and End: Parking locations (short route)
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{problem_2b_route2.png}
+\end{center}
+
+This route shows a very short path between two parking-related locations. The model doesn't account for whether parking is available, restricted by time, or appropriate for different user types (students, faculty, visitors). Additionally, the algorithm doesn't consider accessibility features or parking permit requirements, making the "shortest" path not always the most practical one.
+
+\subsection*{2c. Externalities}
+
+\textbf{Impact on users:} When everyone uses the same optimal route, congestion occurs and the route becomes slower. This creates a tragedy of the commons where individual optimization leads to collective worse outcomes. Users also become over-reliant on the system and lose familiarity with alternative routes.
+
+\textbf{Impact on non-users:} Quiet residential areas experience increased foot traffic and noise they didn't choose. Local businesses on less-traveled routes lose customers. The system redistributes traffic without considering community preferences.
+
+\textbf{Solution:} Implement route randomization to distribute traffic across multiple near-optimal paths. This prevents everyone from taking the exact same route and spreads the impact more evenly across the campus.
+
+\section*{Problem 3: Waypoints}
+
+\subsection*{3b. Maximum States}
+
+The maximum number of states is $n \cdot 2^k$.
+
+For each of the $n$ locations, we need to track which subset of the $k$ waypoint tags have been visited. Since each tag can be either visited or not visited, there are $2^k$ possible subsets. Therefore, total states = $n \times 2^k$.
+
+\subsection*{3c. Custom Waypoints Route}
+
+Start: Gates CS Building
+
+Waypoints: amenity=food, amenity=cafe
+
+End: amenity=parking
+
+\begin{center}
+\includegraphics[width=0.95\textwidth]{problem_3c_waypoints.png}
+\end{center}
+
+The path visits food and cafe locations before ending at parking, which represents a realistic scenario. Interestingly, some locations satisfy multiple waypoint tags, making the path more efficient.
+
+However, the route doesn't account for important factors like business hours, crowding during peak times, or weather preferences (indoor vs outdoor routes). The model also doesn't consider the quality or type of food available.
+
+\subsection*{3d. Ethical Considerations}
+
+\textbf{Waypoints for drivers:} Include rest stops with restrooms, healthy food options, and safe parking areas for breaks. This helps drivers maintain health during long shifts without significantly lengthening routes.
+
+\textbf{Information needed:} Driver shift duration, time since last break, dietary restrictions, and vehicle fuel status. This personalizes waypoint selection to individual driver needs.
+
+\textbf{Negative use:} Companies could abuse this feature by strategically placing the next pickup as a "waypoint," making it psychologically difficult for drivers to log off. The forward dispatch feature could be disguised as helpful routing while actually being exploitative.
+
+\textbf{Privacy concerns:} Collecting detailed health and break data creates surveillance concerns. Companies might use this data to penalize drivers who take "too many" breaks or discriminate based on health conditions, creating a hostile work environment.
+
+\end{document}
